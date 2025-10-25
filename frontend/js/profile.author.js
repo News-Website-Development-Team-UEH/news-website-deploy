@@ -1,6 +1,6 @@
 class AuthorApplicationHandler {
   constructor() {
-    // this.API_BASE = "http://localhost:3000";
+    // this.API_BASE = "https://news-website-deploy-iykm.onrender.com";
     this.form = document.getElementById("authorApplicationForm");
     this.statusBox = document.getElementById("authorRequestStatus");
     this.uploadBtn = document.getElementById("uploadAvatarBtn");
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 class AuthorInfoHandler {
   constructor(userService) {
     this.userService = userService;
-    // this.API_BASE = "http://localhost:3000";
+    // this.API_BASE = "https://news-website-deploy-iykm.onrender.com";
     this.currentPage = 1;
     this.articlesPerPage = 10;
   }
