@@ -1,0 +1,271 @@
+@host = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc2MDE2MDMzMCwiZXhwIjoxNzYwMjQ2NzMwfQ.McOQcB6-syeHocOE0QffEo8b1jdS2sS09X7oqJVcUfM
+@readerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InJlYWRlciIsInVzZXJuYW1lIjoicmVhZGVyMSIsImlhdCI6MTc2MTA2NDE2OSwiZXhwIjoxNzYxMTUwNTY5fQ.IKe--2qHwZ6Nl7w9h66r1Tme-MJ5Tj23hQs_UzBj6Xw
+@authorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6ImF1dGhvciIsInVzZXJuYW1lIjoicmVhZGVyMSIsImlhdCI6MTc2MTE0NTAyMCwiZXhwIjoxNzYxMjMxNDIwfQ.ZhXo_sUpzQPUMkqQ7AYBVRaNUykdFdl1V-BywT03WPc
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc2MTA2NzE3NiwiZXhwIjoxNzYxMTUzNTc2fQ.j-BkN52jwgKN_N8TTFPaKO7lZCt3IIf76585XNVNhiI
+@articleId = 6
+@categoryId = 1
+@commentId = 1
+@userId = 2
+
+# =======================================================
+# 🌐 PUBLIC ROUTES (Từ public.js)
+# =======================================================
+
+### 1. AUTH - Đăng ký
+POST {{host}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "testuser123",
+    "password": "password123",
+    "email": "testuser123@example.com",
+    "fullName": "Nguyen Van A"
+}
+
+### 2. AUTH - Đăng nhập
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "reader1",
+  "password": "password123"
+}
+
+# 3. AUTH - Google Login (Chuyển hướng)
+# GET {{host}}/auth/google
+
+### 4. ARTICLES - Lấy tất cả bài viết
+GET {{host}}/articles
+
+### 5. ARTICLES - Tìm kiếm bài viết
+GET {{host}}/articles/search?q=AI
+
+### 6. ARTICLES - Bài viết mới nhất
+GET {{host}}/articles/latest
+
+### 7. ARTICLES - Bài viết được bình luận nhiều nhất
+GET {{host}}/articles/top-commented
+
+### 8. ARTICLES - Bài viết ngẫu nhiên
+GET {{host}}/articles/random
+
+### 9. ARTICLES - Xem chi tiết bài viết theo ID
+GET {{host}}/articles/{{articleId}}
+
+### 10. ARTICLES - Bài viết theo Category ID
+GET {{host}}/articles/category/{{categoryId}}
+
+### 11. COMMENTS - Lấy bình luận đã duyệt theo Bài viết ID
+GET {{host}}/articles/{{articleId}}/comments
+
+### 13. CATEGORIES - Lấy tất cả danh mục
+GET {{host}}/categories
+
+# =======================================================
+# 👤 READER ROUTES (Từ reader.js)
+# Cần JWT Token có vai trò 'reader' hoặc cao hơn
+# =======================================================
+
+### 15. READER - Đăng bình luận
+POST {{host}}/reader/comments
+Content-Type: application/json
+Authorization: Bearer {{readerToken}}
+
+{
+  "articleId": 1,
+  "content": "Đây là một bình luận từ một Reader."
+}
+
+### 16. READER - Xem hồ sơ
+GET {{host}}/reader/profile
+Authorization: Bearer {{readerToken}}
+
+### 17. READER - Cập nhật hồ sơ
+PUT {{host}}/reader/profile
+Content-Type: application/json
+Authorization: Bearer {{readerToken}}
+
+{
+  "password": "newreadername"
+}
+
+# =======================================================
+# ✍️ AUTHOR ROUTES (Từ author.js)
+# Cần JWT Token có vai trò 'author' hoặc cao hơn
+# =======================================================
+
+### 18. AUTHOR - Tạo bài viết mới
+POST {{host}}/author/articles
+Content-Type: application/json
+Authorization: Bearer {{authorToken}}
+
+{
+  "title": "Cách nhận Gemini Pro miễn phí 1 năm dành cho sinh viên Việt Nam",
+  "description": "Google chính thức triển khai ưu đãi đặc biệt dành cho sinh viên Việt Nam: Gemini Pro miễn phí 1 năm. Chương trình không yêu cầu fake VPN, chỉ cần xác minh bằng email sinh viên.",
+  "image_url": "http://localhost:3000/uploads/images/download.jpg",
+  "content": "Google chính thức triển khai ưu đãi đặc biệt dành cho sinh viên Việt Nam: Gemini Pro miễn phí 1 năm. Điều đáng chú ý là chương trình này không yêu cầu fake VPN, không cần chỉnh sửa thông tin, chỉ cần xác minh bằng email sinh viên là bạn có thể sử dụng ngay. Nếu bạn đang là sinh viên hoặc thậm chí đã tốt nghiệp nhưng vẫn giữ tài khoản mail edu.vn, hãy nhanh chóng đăng ký để nhận ngay quyền lợi này.\n\nLưu ý quan trọng trước khi đăng ký:\n- Thời hạn chương trình: Bạn cần hoàn tất đăng ký trước ngày 9/12/2025.\n- Tránh bị trừ phí sau 1 năm: Hãy vào Google One và hủy gia hạn ngay sau khi đăng ký thành công.\n\nCác bước đăng ký Gemini Pro miễn phí 1 năm:\n1. Truy cập trang ưu đãi chính thức: https://one.google.com/u/0/ai-student?g1_landing_page=75\n2. Điền thông tin cá nhân và chọn Xác minh trạng thái sinh viên của tôi.\n3. Đăng nhập bằng email sinh viên (edu.vn).\n4. Thêm thông tin thanh toán (sẽ bị trừ một khoản nhỏ và hoàn lại).\n5. Hoàn tất và sử dụng Gemini Pro.\n\nƯu đãi bao gồm Miễn phí 12 tháng, không giới hạn chức năng AI nâng cao và 2TB dung lượng lưu trữ Google Drive.\n\nKết luận: Chương trình là cơ hội hiếm có để sinh viên Việt Nam trải nghiệm công nghệ AI tiên tiến của Google mà không mất phí. Hãy đăng ký ngay hôm nay.",
+  "categoryId": 2,
+  "status": "published"
+}
+
+### 19. AUTHOR - Cập nhật bài viết theo ID
+PUT {{host}}/author/articles/{{articleId}}
+Content-Type: application/json
+Authorization: Bearer {{authorToken}}
+
+{
+  "title": "Tiêu đề đã được cập nhật"
+}
+
+### 20. AUTHOR - Xóa bài viết theo ID
+DELETE {{host}}/author/articles/{{articleId}}
+Authorization: Bearer {{authorToken}}
+
+# =======================================================
+# 👑 ADMIN ROUTES (Từ admin.js)
+# Cần JWT Token có vai trò 'admin'
+# =======================================================
+
+### 21. ADMIN - Quản lý USERS - Lấy tất cả người dùng
+GET {{host}}/admin/users
+Authorization: Bearer {{adminToken}}
+
+### 22. ADMIN - Quản lý USERS - Xóa người dùng theo ID
+DELETE {{host}}/admin/users/{{userId}}
+Authorization: Bearer {{adminToken}}
+
+### 23. ADMIN - Quản lý CATEGORIES - Lấy tất cả danh mục
+GET {{host}}/admin/categories
+Authorization: Bearer {{adminToken}}
+
+### 24. ADMIN - Quản lý CATEGORIES - Tạo danh mục mới
+POST {{host}}/admin/categories
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Danh mục mới",
+  "slug": "danh-muc-moi"
+}
+
+### 25. ADMIN - Quản lý CATEGORIES - Cập nhật danh mục theo ID
+PUT {{host}}/admin/categories/{{categoryId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Danh mục đã cập nhật"
+}
+
+### 26. ADMIN - Quản lý CATEGORIES - Xóa danh mục theo ID
+DELETE {{host}}/admin/categories/{{categoryId}}
+Authorization: Bearer {{adminToken}}
+
+### 27. ADMIN - Quản lý ARTICLES - Tạo bài viết (Trùng với Author nhưng đây là route Admin)
+POST {{host}}/admin/articles
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Georgia Tech Ra Mắt Nexus Siêu Máy Tính AI Trị Giá 20 Triệu USD Với 400 Quadrillion Phép Tính Mỗi Giây",
+  "description": "Georgia Tech vừa công bố dự án Nexus, một siêu máy tính AI có khả năng xử lý hơn 400 quadrillion phép tính mỗi giây, được tài trợ 20 triệu USD từ NSF.",
+  "image_url": "https://devops.vn/uploads/images/2025/08/259b6f48-b5ca-4498-a815-91d6b0995259.webp",
+  "content": "Georgia Tech vừa công bố dự án Nexus là một siêu máy tính AI có khả năng xử lý hơn 400 quadrillion phép tính mỗi giây, tương đương mỗi người trên Trái Đất cùng lúc thực hiện 50 triệu phép tính. Dự án này được hỗ trợ bởi khoản tài trợ 20 triệu USD từ Quỹ Khoa học Quốc gia Hoa Kỳ (NSF), với mục tiêu dân chủ hóa quyền tiếp cận sức mạnh tính toán tiên tiến, giúp các nhà khoa học trên khắp nước Mỹ không chỉ ở các trung tâm công nghệ lớn có thể tận dụng.\n\nSức Mạnh & Ứng Dụng Thực Tiễn:\n- Nexus được thiết kế chuyên biệt để thúc đẩy đột phá trong nhiều lĩnh vực, bao gồm Y học, Năng lượng, Khí hậu và Robot.\n- Bên cạnh sức mạnh tính toán khổng lồ, Nexus còn sở hữu bộ nhớ và dung lượng lưu trữ cực lớn, đi kèm giao diện người dùng đơn giản.\n\nHạ Tầng Hợp Tác Toàn Quốc:\nNexus sẽ đặt tại Georgia Tech, phối hợp cùng Trung tâm Ứng dụng Siêu Máy Tính Quốc gia thuộc Đại học Illinois Urbana-Champaign. Hai đơn vị này sẽ xây dựng hạ tầng mạng tốc độ cao, tạo điều kiện cho nghiên cứu AI hợp tác trên toàn quốc.\n\nDự kiến Nexus sẽ chính thức hoạt động vào mùa xuân 2026. Theo các nhà lãnh đạo, Nexus sẽ xóa bỏ rào cản trong nghiên cứu AI, cung cấp công cụ tính toán quy mô lớn, an toàn và mạnh mẽ cho cộng đồng khoa học Mỹ.",
+  "categoryId": 3,
+  "status": "published"
+}
+
+### 28. ADMIN - Quản lý ARTICLES - Cập nhật bài viết theo ID
+PUT {{host}}/admin/articles/{{articleId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Tiêu đề Admin đã cập nhật"
+}
+
+### Hoặc dùng URL cụ thể
+PUT http://localhost:3000/admin/articles/39
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Test update title"
+}
+
+### 29. ADMIN - Quản lý ARTICLES - Xóa bài viết theo ID
+DELETE {{host}}/admin/articles/{{articleId}}
+Authorization: Bearer {{adminToken}}
+
+### 30. ADMIN - Quản lý COMMENTS - Duyệt bình luận theo ID
+PUT {{host}}/admin/comments/{{commentId}}/approve
+Authorization: Bearer {{adminToken}}
+
+### 31. ADMIN - Quản lý COMMENTS - Từ chối bình luận theo ID
+PUT {{host}}/admin/comments/{{commentId}}/reject
+Authorization: Bearer {{adminToken}}
+
+# =======================================================
+# ✉️ AUTHOR REQUEST ROUTES
+# =======================================================
+
+### 32. READER - Gửi yêu cầu trở thành TÁC GIẢ
+POST {{host}}/reader/author-requests
+Authorization: Bearer {{readerToken}}
+Content-Type: application/json
+
+{
+  "reason": "Tôi muốn chia sẻ kiến thức công nghệ, đặc biệt là về Java và AI."
+}
+
+### 33. ADMIN - Xem tất cả yêu cầu trở thành tác giả
+GET {{host}}/admin/author-requests
+Authorization: Bearer {{adminToken}}
+
+
+### 34. ADMIN - Duyệt hoặc từ chối yêu cầu
+PUT {{host}}/admin/author-requests/1
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "status": "approved"
+}
+### READER - Lấy danh sách category đang follow
+GET {{host}}/reader/followed-categories
+Authorization: Bearer {{readerToken}}
+
+### READER - Follow category
+POST {{host}}/reader/follow-category
+Content-Type: application/json
+Authorization: Bearer {{readerToken}}
+
+{
+    "categoryId": 1
+}
+
+### READER - Unfollow category
+POST {{host}}/reader/unfollow-category
+Content-Type: application/json
+Authorization: Bearer {{readerToken}}
+
+{
+    "categoryId": 1
+}
+
+### Gửi yêu cầu tóm tắt bài viết bằng AI
+POST http://localhost:3000/ai/summary
+Content-Type: application/json
+
+{
+  "articleId": 2
+}
+
+### Lấy tất cả bài viết của tác giả theo ID tác giả với phân trang
+GET {{host}}/author/3/articles?page=1&limit=10
+Authorization: Bearer {{authorToken}}
+
+### 35. READER - Xem lại yêu cầu trở thành tác giả của chính mình
+GET {{host}}/reader/author-requests
+Authorization: Bearer {{readerToken}}
