@@ -1,1 +1,16 @@
+# File cấu hình môi trường
 .env
+
+# Các thư mục và file được tạo tự động
+node_modules/
+dist/
+build/
+coverage/
+
+# Các file log
+*.log
+
+# Các file IDE (ví dụ: VSCode)
+.vscode/
+.idea/
+.DS_Store

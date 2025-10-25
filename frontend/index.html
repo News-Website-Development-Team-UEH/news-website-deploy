@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>TheGRID - Home</title>
+  </head>
+  <link rel="stylesheet" href="css/index.css" />
+  <header class="header">
+    <div class="container-fluid py-2 px-3">
+      <div
+        class="d-flex flex-column flex-lg-row align-items-center justify-content-between gap-3"
+      >
+        <!-- Logo -->
+        <a
+          class="logo navbar-brand d-flex align-items-center"
+          href="index.html"
+        >
+          <span class="the">.</span><span class="grid">TheGRID</span>
+        </a>
+        <!--  Categories động -->
+        <nav
+          id="categoriesList"
+          class="d-flex gap-4 flex-wrap justify-content-center"
+        ></nav>
+        <!-- Nút search + login -->
+        <div class="d-flex align-items-center gap-3">
+          <a href="formsearch.html" class="search-btn">🔍<span>Tìm</span></a>
+          <button
+            id="menuToggle"
+            class="btn btn-outline-primary d-md-none rounded-circle d-flex align-items-center justify-content-center p-0"
+            style="width: 46px; height: 46px"
+          >
+            <i class="bi bi-list fa fa-bars fs-4"></i>
+          </button>
+          <div id="authArea"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div id="mobileMenu" class="mobile-menu bg-dark text-light p-3"></div>
+  <body class="d-flex flex-column min-vh-100">
+    <main class="flex-grow-1">
+      <div class="container col-xl-10 container-content">
+        <div class="row">
+          <div class="col-lg-7">
+            <div class="main-article">
+              <div class="main-thumbnail"></div>
+              <h2 class="main-title"></h2>
+              <p class="main-desc text-muted"></p>
+              <div class="meta">
+                <a href="#" class="author"></a>
+                <span class="time"></span>
+                <a href="#" class="comments"
+                  ><i class="fa-regular fa-comment"></i
+                ></a>
+              </div>
+            </div>
+
+            <div class="tags-section text-center my-4">
+              <div class="btn-group mb-3">
+                <button id="btn-stream" class="btn btn-toggle active">
+                  Các bài báo hôm nay
+                </button>
+                <button id="btn-following" class="btn btn-toggle">
+                  Theo dõi
+                </button>
+              </div>
+
+              <div id="following-section" class="mt-4 d-none">
+                <p class="text-white-50">Chọn các chủ đề bạn muốn theo dõi:</p>
+                <div
+                  class="d-flex flex-wrap justify-content-center gap-3"
+                  id="followingCategories"
+                ></div>
+              </div>
+            </div>
+            <div class="article-section" id="article-list"></div>
+            <div class="article-section d-none" id="article-following"></div>
+          </div>
+
+          <div class="col-lg-5 right-sidebar">
+            <div class="story-list-block top-stories-block mb-5">
+              <h5>Các bài nổi bật</h5>
+              <ul class="list-unstyled" id="top-stories"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-logo">.TheGRID</div>
+        <div class="footer-content">
+          <div class="footer-links">
+            <div class="footer-links-row">
+              <a href="#">Liên hệ</a>
+              <a href="#">Góp ý</a>
+              <a href="#">Quy tắc cộng đồng</a>
+              <a href="#">Giới thiệu</a>
+              <a href="#">Tuyên bố đạo đức</a>
+              <a href="#">Cách chúng tôi đánh giá sản phẩm</a>
+            </div>
+            <div class="footer-links-row">
+              <a href="#">Cài đặt Cookie</a>
+              <a href="#">Điều khoản sử dụng</a>
+              <a href="#">Chính sách bảo mật</a>
+              <a href="#">Chính sách Cookie</a>
+              <a href="#">Câu hỏi về bản quyền</a>
+              <a href="#">Khả năng tiếp cận</a>
+              <a href="#">Trạng thái hệ thống</a>
+            </div>
+          </div>
+          <div class="footer-social">
+            <a href="#" class="social-icon">@</a>
+            <a href="#" class="social-icon">f</a>
+            <a href="#" class="social-icon">in</a>
+            <a href="#" class="social-icon">→</a>
+          </div>
+        </div>
+        <div class="footer-copyright">2025 TheGRID</div>
+      </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/home.js"></script>
+  </body>
+</html>
