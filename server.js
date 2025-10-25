@@ -49,7 +49,9 @@ const serveStaticFile = (req, res, pathname) => {
       }
 
       const ext = path.extname(filePath);
-      res.writeHead(200, { "Content-Type": mimeTypes[ext] || "application/octet-stream" });
+      res.writeHead(200, {
+        "Content-Type": mimeTypes[ext] || "application/octet-stream",
+      });
       fs.createReadStream(filePath).pipe(res);
     });
     return;
@@ -84,73 +86,84 @@ const serveStaticFile = (req, res, pathname) => {
 };
 
 // Tạo server
-const server = http.createServer(async (req, res) => {
-  // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+const allowedOrigins = [
+  "https://news-website-frontend-vert.vercel.app", // domain thật trên Vercel
+  "http://localhost:5500", // cho dev local
+];
 
-  if (req.method === "OPTIONS") {
-    res.writeHead(204);
-    return res.end();
+const origin = req.headers.origin;
+if (allowedOrigins.includes(origin)) {
+  res.setHeader("Access-Control-Allow-Origin", origin);
+}
+res.setHeader("Vary", "Origin"); // tránh cache sai domain
+res.setHeader(
+  "Access-Control-Allow-Methods",
+  "GET, POST, PUT, DELETE, OPTIONS"
+);
+res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+res.setHeader("Access-Control-Allow-Credentials", "true");
+
+// Xử lý preflight request (OPTIONS)
+if (req.method === "OPTIONS") {
+  res.writeHead(204);
+  return res.end();
+}
+
+// Nhận body
+let body = "";
+req.on("data", (chunk) => (body += chunk.toString()));
+
+req.on("end", async () => {
+  try {
+    req.body = body ? JSON.parse(body) : {};
+  } catch (err) {
+    res.writeHead(400, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Dữ liệu JSON không hợp lệ." }));
+    return;
   }
 
-  // Nhận body
-  let body = "";
-  req.on("data", (chunk) => (body += chunk.toString()));
+  const parsedUrl = url.parse(req.url, true);
+  const pathname = parsedUrl.pathname;
 
-  req.on("end", async () => {
-    try {
-      req.body = body ? JSON.parse(body) : {};
-    } catch (err) {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Dữ liệu JSON không hợp lệ." }));
+  try {
+    // Public routes
+    if (await handlePublicRoutes(req, res)) return;
+
+    // Reader routes
+    if (pathname.startsWith("/reader")) {
+      const handled = await handleReaderRoutes(req, res);
+      if (handled) return;
+    }
+
+    // Author routes
+    if (pathname.startsWith("/author")) {
+      const handled = await handleAuthorRoutes(req, res);
+      if (handled) return;
+    }
+
+    // Admin routes
+    if (pathname.startsWith("/admin")) {
+      const handled = await handleAdminRoutes(req, res);
+      if (handled) return;
+    }
+
+    // Không tìm thấy route API
+    if (
+      pathname.startsWith("/api") ||
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/author") ||
+      pathname.startsWith("/reader")
+    ) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Không tìm thấy tài nguyên." }));
       return;
     }
 
-    const parsedUrl = url.parse(req.url, true);
-    const pathname = parsedUrl.pathname;
-
-    try {
-      // Public routes
-      if (await handlePublicRoutes(req, res)) return;
-
-      // Reader routes
-      if (pathname.startsWith("/reader")) {
-        const handled = await handleReaderRoutes(req, res);
-        if (handled) return;
-      }
-
-      // Author routes
-      if (pathname.startsWith("/author")) {
-        const handled = await handleAuthorRoutes(req, res);
-        if (handled) return;
-      }
-
-      // Admin routes
-      if (pathname.startsWith("/admin")) {
-        const handled = await handleAdminRoutes(req, res);
-        if (handled) return;
-      }
-
-      // Không tìm thấy route API
-      if (
-        pathname.startsWith("/api") ||
-        pathname.startsWith("/admin") ||
-        pathname.startsWith("/author") ||
-        pathname.startsWith("/reader")
-      ) {
-        res.writeHead(404, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "Không tìm thấy tài nguyên." }));
-        return;
-      }
-
-      // Serve file tĩnh
-      serveStaticFile(req, res, pathname);
-    } catch (err) {
-      sendServerError(res, err);
-    }
-  });
+    // Serve file tĩnh
+    serveStaticFile(req, res, pathname);
+  } catch (err) {
+    sendServerError(res, err);
+  }
 });
 
 // Khởi động server
