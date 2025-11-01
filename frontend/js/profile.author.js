@@ -339,7 +339,7 @@ class AuthorInfoHandler {
         )
           return;
         const articleId = item.dataset.id;
-        window.location.href = `articledetail.html?id=${articleId}`;
+        window.location.href = `formarticle.html?id=${articleId}`;
       });
     });
 
