@@ -10,7 +10,7 @@ const handleReaderRoutes = require("./routes/reader");
 const handleAuthorRoutes = require("./routes/author");
 const handleAdminRoutes = require("./routes/admin");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 const FRONTEND_DIR = path.join(__dirname, "../frontend");
 const UPLOAD_DIR = path.join(__dirname, "uploads");
 const INDEX_FILE = path.join(FRONTEND_DIR, "index.html");
@@ -90,6 +90,7 @@ const serveStaticFile = (req, res, pathname) => {
 const server = http.createServer(async (req, res) => {
   const allowedOrigins = [
     "https://news-website-frontend-vert.vercel.app",
+    "https://news-website-deploy-iykm.onrender.com",
     "http://localhost:5500",
   ];
 
@@ -129,9 +130,18 @@ const server = http.createServer(async (req, res) => {
 
     try {
       if (await handlePublicRoutes(req, res)) return;
-      if (pathname.startsWith("/reader") && await handleReaderRoutes(req, res)) return;
-      if (pathname.startsWith("/author") && await handleAuthorRoutes(req, res)) return;
-      if (pathname.startsWith("/admin") && await handleAdminRoutes(req, res)) return;
+      if (
+        pathname.startsWith("/reader") &&
+        (await handleReaderRoutes(req, res))
+      )
+        return;
+      if (
+        pathname.startsWith("/author") &&
+        (await handleAuthorRoutes(req, res))
+      )
+        return;
+      if (pathname.startsWith("/admin") && (await handleAdminRoutes(req, res)))
+        return;
 
       if (
         pathname.startsWith("/api") ||
@@ -153,7 +163,7 @@ const server = http.createServer(async (req, res) => {
 
 // Khởi động server
 server.listen(PORT, async () => {
-  console.log(`Server đang chạy tại http://localhost:${PORT}`);
+  console.log(`Server đang chạy tại cổng ${PORT}`);
   try {
     await db.init();
     console.log("Database kết nối thành công");
