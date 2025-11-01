@@ -14,9 +14,12 @@ class AdminArticleController extends ControllerBase {
   // Tạo mới bài viết
   async create(req, res) {
     try {
-      const article = await Article.create(req.body);
+      const article = await Article.create({
+        ...req.body,
+        status: "published",
+      });
       this.sendResponse(res, 201, {
-        message: "Bài viết đã được tạo.",
+        message: "Bài viết đã được tạo và xuất bản.",
         data: article,
       });
     } catch (err) {
