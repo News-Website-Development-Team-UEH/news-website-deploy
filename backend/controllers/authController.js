@@ -9,7 +9,7 @@ require("../config/passport");
 
 class AuthController extends ControllerBase {
   _redirectToFrontend(res, pathAndQuery, status = 302) {
-    const FE_HOST = "http://localhost:3000";
+    const FE_HOST = "https://news-website-frontend-vert.vercel.app";
 
     res.writeHead(status, {
       Location: `${FE_HOST}${pathAndQuery}`,
