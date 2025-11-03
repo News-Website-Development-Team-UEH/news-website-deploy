@@ -45,8 +45,13 @@ class AdminArticleController extends ControllerBase {
       const { id } = req.params;
       const article = await Article.findById(id);
       if (!(await this.checkExists(article, res, "Bài viết"))) return;
-      Object.assign(article, req.body);
+
+      const updateData = { ...req.body };
+      delete updateData.status;
+
+      Object.assign(article, updateData);
       await article.save();
+
       this.sendResponse(res, 200, {
         message: "Bài viết đã được cập nhật.",
         data: article,
